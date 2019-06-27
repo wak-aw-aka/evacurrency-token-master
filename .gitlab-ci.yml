@@ -1,0 +1,76 @@
+stages:
+  - install-dependencies
+  - lint
+  - test
+
+variables:
+  DOCKER_HOST: tcp://localhost:2376
+  DOCKER_DRIVER: overlay2
+  DOCKER_TAG_BRANCH: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  DOCKER_TAG_COMMIT: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  DOCKER_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+  TILLER_NAMESPACE: kube-system
+
+npm:install:
+  stage: install-dependencies
+  artifacts:
+    paths:
+      - node_modules/
+  image: node:8.11.1
+  except:
+    - master
+  script:
+    - sed -i -e "s/ssh:\/\/git@git.ambisafe.io:/https:\/\/gitlab-ci-token:$CI_JOB_TOKEN@gitlab.ambisafe.io\//" package.json && sed -i -e "s/ssh:\/\/git@git.ambisafe.io:/https:\/\/gitlab-ci-token:$CI_JOB_TOKEN@gitlab.ambisafe.io\//" package.json && npm install && npm run compile
+  tags:
+    - single
+
+lint:
+  stage: lint
+  image: node:8.11.1
+  script:
+    - npm run validate
+  tags:
+    - single
+
+test:
+  stage: test
+  dependencies:
+    - npm:install
+  image: node:8.11.1
+  except:
+    - master
+  services:
+  - name: trufflesuite/ganache-cli:v6.1.8
+    command: ["--gasLimit", "10000000"]
+  script:
+    - npm run test
+  tags:
+    - single
+
+npm:install:prod:
+  stage: install-dependencies
+  artifacts:
+    paths:
+      - node_modules/
+  image: node:8.11.1
+  only:
+    - master
+  script:
+    - sed -i -e "s/ssh:\/\/git@git.ambisafe.io:/https:\/\/gitlab-ci-token:$CI_JOB_TOKEN@gitlab.ambisafe.io\//" package.json && sed -i -e "s/ssh:\/\/git@git.ambisafe.io:/https:\/\/gitlab-ci-token:$CI_JOB_TOKEN@gitlab.ambisafe.io\//" package.json && npm install && npm run compile
+  tags:
+    - single
+
+test:prod:
+  stage: test
+  dependencies:
+    - npm:install:prod
+  image: node:8.11.1
+  only:
+    - master
+  services:
+  - name: trufflesuite/ganache-cli:v6.1.8
+    command: ["--gasLimit", "10000000"]
+  script:
+    - npm run test
+  tags:
+    - single

@@ -1,0 +1,38 @@
+{
+  "name": "evacurrency-token",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "truffle test",
+    "compile": "truffle compile",
+    "truffle": "truffle",
+    "testrpc": "ganache-cli --gasLimit 10000000",
+    "ganache": "ganache-cli --gasLimit 10000000",
+    "validate": "eslint *.js scripts/*.js test/*/*.js test/*.js && solhint contracts/*.sol contracts/*/*.sol"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.ambisafe.io/solidity/contracts/evacurrency-token"
+  },
+  "keywords": [
+    "ethereum"
+  ],
+  "author": "Oleksii Matiiasevych <oleksii@ambisafe.com> (Ambisafe Inc.)",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://gitlab.ambisafe.io/solidity/contracts/evacurrency-token#readme",
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "assert": "^1.4.1",
+    "bignumber.js": "^4.1.0",
+    "bluebird": "^3.4.7",
+    "ethereumjs-util": "6.1.0",
+    "etoken-lib": "^0.14.0",
+    "ganache-cli": "6.1.8",
+    "truffle": "5.0.6",
+    "web3": "^0.20.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.11.0",
+    "solhint": "^1.5.1"
+  }
+}
